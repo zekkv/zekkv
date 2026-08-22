@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useTheme } from "../providers/theme-provider";
+import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import {
   Tooltip,
@@ -13,7 +13,7 @@ const ThemeToggle = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & { isTop?: boolean }
 >(({ isTop = false, ...props }, ref) => {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -24,9 +24,11 @@ const ThemeToggle = React.forwardRef<
     return <div className="w-5 h-5 flex items-center justify-center p-1.5" />;
   }
 
+  const isDark = resolvedTheme === "dark";
+
   const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setTheme(theme === "dark" || theme === "system" ? "light" : "dark");
+    setTheme(isDark ? "light" : "dark");
   };
 
   return (
@@ -40,7 +42,7 @@ const ThemeToggle = React.forwardRef<
           type="button"
           {...props}
         >
-          {theme === "dark" || theme === "system" ? (
+          {isDark ? (
             <Sun className="w-5 h-5 pointer-events-none" />
           ) : (
             <Moon className="w-5 h-5 pointer-events-none" />
@@ -51,7 +53,7 @@ const ThemeToggle = React.forwardRef<
         side={isTop ? "bottom" : "top"}
         className="bg-card border border-border text-card-foreground rounded-none"
       >
-        {theme === "dark" || theme === "system" ? "Light Mode" : "Dark Mode"}
+        {isDark ? "Light Mode" : "Dark Mode"}
       </TooltipContent>
     </Tooltip>
   );

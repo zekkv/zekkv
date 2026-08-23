@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { env } from "@/env";
+import { redis } from "@/lib/redis";
 
 // Manual types — replace by running:
 //   bunx @strapi/client generate-types --url $STRAPI_URL --token $STRAPI_API_TOKEN
@@ -58,7 +59,17 @@ export interface StrapiToolkit {
   concepts: string[];
 }
 
+// Everything lives under one Redis key (hash fields per content type) so a
+// single publish anywhere invalidates the whole cache with one `del`.
+const CACHE_KEY = "strapi-cache";
+
 async function get<T>(path: string): Promise<T> {
+  const field = path.split("?")[0];
+  const cached = await redis.hget<T>(CACHE_KEY, field);
+  if (cached !== null && cached !== undefined) {
+    return cached;
+  }
+
   const res = await fetch(`${env.STRAPI_URL}/api/${path}`, {
     headers: {
       Authorization: `Bearer ${env.STRAPI_API_TOKEN}`,
@@ -69,7 +80,13 @@ async function get<T>(path: string): Promise<T> {
       `Strapi fetch failed: ${path} — ${res.status} ${res.statusText}`
     );
   }
-  return res.json() as Promise<T>;
+  const data = (await res.json()) as T;
+  await redis.hset(CACHE_KEY, { [field]: data });
+  return data;
+}
+
+export async function invalidateStrapiCache(): Promise<void> {
+  await redis.del(CACHE_KEY);
 }
 
 export const fetchProjects = createServerFn({ method: "GET" }).handler(

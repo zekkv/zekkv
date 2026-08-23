@@ -14,6 +14,7 @@ import { Route as EducationRouteImport } from './routes/education'
 import { Route as ExperienceRouteImport } from './routes/experience'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ToolkitRouteImport } from './routes/toolkit'
+import { Route as ApiWebhooksStrapiRouteImport } from './routes/api/webhooks/strapi'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ToolkitRoute = ToolkitRouteImport.update({
   path: '/toolkit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWebhooksStrapiRoute = ApiWebhooksStrapiRouteImport.update({
+  id: '/api/webhooks/strapi',
+  path: '/api/webhooks/strapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/toolkit': typeof ToolkitRoute
+  '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/toolkit': typeof ToolkitRoute
+  '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/toolkit': typeof ToolkitRoute
+  '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/education' | '/experience' | '/projects' | '/toolkit'
+  fullPaths:
+    | '/'
+    | '/education'
+    | '/experience'
+    | '/projects'
+    | '/toolkit'
+    | '/api/webhooks/strapi'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/education' | '/experience' | '/projects' | '/toolkit'
-  id: '__root__' | '/' | '/education' | '/experience' | '/projects' | '/toolkit'
+  to:
+    | '/'
+    | '/education'
+    | '/experience'
+    | '/projects'
+    | '/toolkit'
+    | '/api/webhooks/strapi'
+  id:
+    | '__root__'
+    | '/'
+    | '/education'
+    | '/experience'
+    | '/projects'
+    | '/toolkit'
+    | '/api/webhooks/strapi'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +105,7 @@ export interface RootRouteChildren {
   ExperienceRoute: typeof ExperienceRoute
   ProjectsRoute: typeof ProjectsRoute
   ToolkitRoute: typeof ToolkitRoute
+  ApiWebhooksStrapiRoute: typeof ApiWebhooksStrapiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolkitRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/webhooks/strapi': {
+      id: '/api/webhooks/strapi'
+      path: '/api/webhooks/strapi'
+      fullPath: '/api/webhooks/strapi'
+      preLoaderRoute: typeof ApiWebhooksStrapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperienceRoute: ExperienceRoute,
   ProjectsRoute: ProjectsRoute,
   ToolkitRoute: ToolkitRoute,
+  ApiWebhooksStrapiRoute: ApiWebhooksStrapiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

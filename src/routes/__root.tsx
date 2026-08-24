@@ -1,9 +1,8 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import Navbar from "../components/custom/navbar";
+import Chrome from "../components/custom/chrome";
 import { ThemeProvider } from "next-themes";
-import { TooltipProvider } from "../components/ui/tooltip";
 
 import appCss from "../globals.css?url";
 
@@ -19,40 +18,20 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Portfolio of Charles Isaac Velasco, an Information Systems student at SMU focused on cloud infrastructure, modern developer tools, and production-ready cloud-native applications.",
+          "Charles Isaac Velasco builds backend systems and the cloud they run on. Information Systems student at SMU, Singapore. Previously EIU Industry 4.0 Innovation Center.",
       },
-      {
-        property: "og:title",
-        content: "Charles Isaac Velasco",
-      },
+      { property: "og:title", content: "Charles Isaac Velasco" },
       {
         property: "og:description",
         content:
-          "Portfolio of Charles Isaac Velasco, an Information Systems student at SMU focused on cloud infrastructure, modern developer tools, and production-ready cloud-native applications.",
+          "Backend systems and cloud infrastructure. Information Systems student at SMU, Singapore.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      {
-        name: "twitter:title",
-        content: "Charles Isaac Velasco",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Portfolio of Charles Isaac Velasco, an Information Systems student at SMU focused on cloud infrastructure and cloud-native applications.",
-      },
     ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='22' font-family='serif' font-size='18' font-weight='700' text-anchor='middle' fill='%23fff'%3EC%3C/text%3E%3C/svg%3E",
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootDocument,
-  notFoundComponent: () => <div>404 Not Found</div>,
+  notFoundComponent: NotFound,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -61,19 +40,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="font-sans antialiased bg-background text-foreground selection:bg-foreground selection:text-background w-full">
-        <div className="obsidian-grain" />
-        <div className="precision-grid" />
+      <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           storageKey="portfolio-theme"
         >
-          <TooltipProvider>
-            <Navbar />
-            {children}
-          </TooltipProvider>
+          <Chrome>{children}</Chrome>
         </ThemeProvider>
         {import.meta.env.DEV && (
           <TanStackDevtools
@@ -96,5 +70,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         />
       </body>
     </html>
+  );
+}
+
+function NotFound() {
+  return (
+    <section className="flex min-h-screen items-center justify-center px-8">
+      <div className="max-w-md">
+        <p className="font-mono text-xs text-graphite">404</p>
+        <p className="mt-4 font-display text-2xl">This page doesn't exist.</p>
+        <a href="/" className="quiet-link mt-6 inline-block">
+          Back to the index
+        </a>
+      </div>
+    </section>
   );
 }

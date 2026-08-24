@@ -1,6 +1,6 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 import { env } from "@/env";
-import { redis } from "@/lib/redis";
+import { redis } from "@/lib/redis.server";
 
 // Manual types — replace by running:
 //   bunx @strapi/client generate-types --url $STRAPI_URL --token $STRAPI_API_TOKEN
@@ -48,6 +48,8 @@ export interface StrapiUserProfile {
   location: string;
   linkedin: string;
   github: string;
+  now: string;
+  last: string;
 }
 
 export interface StrapiToolkit {
@@ -56,7 +58,6 @@ export interface StrapiToolkit {
   languages: string[];
   cloud: string[];
   frameworks: string[];
-  concepts: string[];
 }
 
 // Everything lives under one Redis key (hash fields per content type) so a
@@ -85,9 +86,9 @@ async function get<T>(path: string): Promise<T> {
   return data;
 }
 
-export async function invalidateStrapiCache(): Promise<void> {
+export const invalidateStrapiCache = createServerOnlyFn(async () => {
   await redis.del(CACHE_KEY);
-}
+});
 
 export const fetchProjects = createServerFn({ method: "GET" }).handler(
   async () => {

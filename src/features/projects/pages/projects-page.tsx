@@ -1,6 +1,6 @@
 import type { StrapiProject } from "@/lib/strapi";
-import ProjectGrid from "../components/project-grid";
-import { SectionLayout } from "#/components/layout/section-layout";
+import Page from "@/components/layout/page";
+import { Projects } from "../components/projects";
 
 interface Props {
   projects: StrapiProject[];
@@ -8,8 +8,12 @@ interface Props {
 
 export default function ProjectsPage({ projects }: Props) {
   return (
-    <SectionLayout number="04" title="Featured Projects">
-      <ProjectGrid projects={projects} />
-    </SectionLayout>
+    <Page
+      title="Work"
+      lede="Builds that reached real infrastructure or real users — coursework and side systems kept alive past the deadline. Select a record to read it."
+      wide
+    >
+      <Projects projects={projects} />
+    </Page>
   );
 }

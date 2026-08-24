@@ -1,89 +1,38 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap");
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-  --font-sans: "Space Grotesk", sans-serif;
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
+  --color-graphite: var(--graphite);
+  --color-faint: var(--faint);
+  --color-hairline: var(--hairline);
+  --color-viridian: var(--viridian);
+  --font-display: "Newsreader", "Georgia", serif;
+  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 :root {
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0 0 0);
-  --popover: oklch(0.98 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.9 0 0);
-  --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.9 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.9 0 0);
-  --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.6 0.2 25);
-  --border: oklch(0 0 0 / 18%);
-  --input: oklch(0 0 0 / 18%);
-  --ring: oklch(0 0 0 / 50%);
-  --radius: 0px;
-  --grid-color: oklch(0 0 0 / 11%);
+  --background: #f7f7f4;
+  --foreground: #1c1f1d;
+  --graphite: #5d6560;
+  --faint: #9aa19c;
+  --hairline: rgb(28 31 29 / 14%);
+  --viridian: #1e6b52;
+  color-scheme: light;
 }
 
 .dark {
-  --background: oklch(0 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.98 0 0);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.1 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.2 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.1 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.6 0.2 25);
-  --border: oklch(1 0 0 / 15%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(1 0 0 / 50%);
-  --grid-color: oklch(1 0 0 / 6%);
+  --background: #121514;
+  --foreground: #e8ebe7;
+  --graphite: #a2aba4;
+  --faint: #6b756f;
+  --hairline: rgb(232 235 231 / 13%);
+  --viridian: #55a886;
+  color-scheme: dark;
 }
 
 html {
@@ -92,36 +41,70 @@ html {
 
 body {
   background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+::selection {
+  background: var(--viridian);
+  color: var(--background);
+}
+
+:focus-visible {
+  outline: 2px solid var(--viridian);
+  outline-offset: 3px;
+}
+
+.rise-in {
+  animation: rise-in 0.45s ease-out both;
+}
+
+/* Record swap inside the shipment index. */
+.swap-in {
+  animation: rise-in 0.18s ease-out both;
+}
+
+.quiet-link {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 5px;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
+}
+
+.quiet-link:hover {
+  color: var(--viridian);
+  text-decoration-color: var(--viridian);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
-  body {
-    @apply bg-background text-foreground;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.obsidian-grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0.02;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-.precision-grid {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background-size: 40px 40px;
-  background-image:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .rise-in {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }

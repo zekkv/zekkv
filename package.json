@@ -1,6 +1,6 @@
 {
   "name": "my-portfolio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,35 +19,35 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@sentry/tanstackstart-react": "^10.69.0",
+    "@sentry/tanstackstart-react": "^10.71.0",
     "@t3-oss/env-core": "^0.13.11",
-    "@tanstack/react-router": "^1.170.18",
-    "@tanstack/react-start": "^1.168.34",
-    "@upstash/redis": "^1.38.2",
+    "@tanstack/react-router": "^1.170.32",
+    "@tanstack/react-start": "^1.168.49",
+    "@upstash/redis": "^1.38.3",
     "next-themes": "0.4.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.52.0",
+    "@cloudflare/vite-plugin": "^1.54.0",
     "@tailwindcss/vite": "^4.3.3",
-    "@tanstack/devtools-vite": "^0.8.3",
-    "@tanstack/react-devtools": "^0.10.9",
-    "@tanstack/react-router-devtools": "^1.167.0",
-    "@types/node": "^26.1.2",
+    "@tanstack/devtools-vite": "^0.8.5",
+    "@tanstack/react-devtools": "^0.10.12",
+    "@tanstack/react-router-devtools": "^1.167.1",
+    "@types/node": "^26.4.0",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.0.5",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.0",
     "lefthook": "^2.1.10",
-    "oxfmt": "^0.61.0",
-    "oxlint": "^1.76.0",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
     "oxlint-tsgolint": "^7.0.2001",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3",
-    "vite": "^8.2.0",
-    "vitest": "^4.1.10",
-    "wrangler": "^4.122.0"
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11",
+    "wrangler": "^4.126.0"
   },
   "engines": {
     "bun": "1.4.0"

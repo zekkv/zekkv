@@ -1,6 +1,6 @@
 {
   "name": "my-portfolio",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,6 +19,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@sentry/cloudflare": "10.71.0",
     "@sentry/tanstackstart-react": "^10.71.0",
     "@t3-oss/env-core": "^0.13.11",
     "@tanstack/react-router": "^1.170.32",

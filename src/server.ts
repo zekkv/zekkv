@@ -1,16 +1,15 @@
-import "../instrument.server.mjs";
+import * as Sentry from "@sentry/cloudflare";
 import { wrapFetchWithSentry } from "@sentry/tanstackstart-react";
-import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
+import handler from "@tanstack/react-start/server-entry";
+import { env } from "./env";
 
-/**
- * Server entry point.
- * Wraps the TanStack Start fetch handler with Sentry to capture
- * server-side errors and performance traces automatically.
- */
-export default createServerEntry(
-  wrapFetchWithSentry({
-    fetch(request: Request) {
-      return handler.fetch(request);
-    },
-  })
+export default Sentry.withSentry(
+  () => ({
+    dsn: env.SENTRY_DSN,
+    sendDefaultPii: true,
+    tracesSampleRate: 1.0,
+    enableLogs: true,
+  }),
+  // @ts-expect-error - TanStack's handler isn't typed as a Cloudflare ExportedHandler
+  wrapFetchWithSentry(handler)
 );

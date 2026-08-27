@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { fetchUserProfile } from "@/lib/strapi";
+import { createFileRoute, getRouteApi } from "@tanstack/react-router";
 import HomePage from "@/features/landing/pages/home-page";
 
+const rootRoute = getRouteApi("__root__");
+
 export const Route = createFileRoute("/")({
-  loader: () => fetchUserProfile(),
   component: function HomeRoute() {
-    const profile = Route.useLoaderData();
+    const profile = rootRoute.useLoaderData();
     return <HomePage profile={profile} />;
   },
 });

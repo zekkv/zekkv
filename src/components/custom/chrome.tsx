@@ -1,7 +1,8 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import { useTheme } from "next-themes";
 
+// ponytail: NAV mirrors the route files (typed `to` paths) — not CMS content, stays local.
 const NAV = [
   { to: "/", label: "Index" },
   { to: "/projects", label: "Work" },
@@ -10,14 +11,16 @@ const NAV = [
   { to: "/education", label: "Education" },
 ] as const;
 
-const CONTACT = [
-  { href: "mailto:zekvelasco15@gmail.com", label: "Email" },
-  { href: "https://github.com/zek01svg", label: "GitHub" },
-  {
-    href: "https://linkedin.com/in/charles-isaac-velasco",
-    label: "LinkedIn",
-  },
-] as const;
+const rootRoute = getRouteApi("__root__");
+
+function useContact() {
+  const { email, github, linkedin } = rootRoute.useLoaderData();
+  return [
+    { href: `mailto:${email}`, label: "Email" },
+    { href: github, label: "GitHub" },
+    { href: linkedin, label: "LinkedIn" },
+  ];
+}
 
 function external(href: string) {
   return href.startsWith("http")
@@ -26,6 +29,7 @@ function external(href: string) {
 }
 
 export default function Chrome({ children }: { children: React.ReactNode }) {
+  const contact = useContact();
   return (
     <>
       <a
@@ -80,6 +84,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
 
         <div className="space-y-6">
           <ContactList
+            contact={contact}
             listClassName="space-y-1.5"
             linkClassName="text-[0.85rem] text-graphite underline decoration-hairline underline-offset-4 transition-colors duration-150 hover:text-viridian"
           />
@@ -129,6 +134,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
         {/* Mobile footer */}
         <footer className="border-t border-hairline px-6 py-9 lg:hidden">
           <ContactList
+            contact={contact}
             listClassName="flex gap-5"
             linkClassName="text-sm text-graphite underline decoration-hairline underline-offset-4 hover:text-viridian"
           />
@@ -142,15 +148,17 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
 }
 
 function ContactList({
+  contact,
   listClassName,
   linkClassName,
 }: {
+  contact: { href: string; label: string }[];
   listClassName: string;
   linkClassName: string;
 }) {
   return (
     <ul className={listClassName}>
-      {CONTACT.map(({ href, label }) => (
+      {contact.map(({ href, label }) => (
         <li key={label}>
           <a href={href} {...external(href)} className={linkClassName}>
             {label}

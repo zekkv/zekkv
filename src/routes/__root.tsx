@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import Chrome from "../components/custom/chrome";
 import { ThemeProvider } from "next-themes";
+import { fetchUserProfile } from "@/lib/strapi";
 
 import appCss from "../globals.css?url";
 
@@ -30,6 +31,7 @@ export const Route = createRootRoute({
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
+  loader: () => fetchUserProfile(),
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
 });

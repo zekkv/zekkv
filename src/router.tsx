@@ -8,7 +8,9 @@ export function getRouter() {
     routeTree,
     scrollRestoration: true,
     defaultPreload: "intent",
-    defaultPreloadStaleTime: 0,
+    // Short window so hovering across the nav reuses a preload instead of
+    // refetching once per hover event.
+    defaultPreloadStaleTime: 10_000,
   });
 
   // Initialize Sentry on the client only (not during SSR)
@@ -24,13 +26,16 @@ export function getRouter() {
         dsn: sentryDsn,
         integrations: [
           Sentry.tanstackRouterBrowserTracingIntegration(router),
-          Sentry.replayIntegration(),
+          // Session Replay ships DOM-mutation recording + observers to every
+          // visitor — load it for ~10% of sessions rather than all of them.
+          ...(Math.random() < 0.1 ? [Sentry.replayIntegration()] : []),
         ],
-        tracesSampleRate: 1.0,
-        replaysSessionSampleRate: 0.1,
+        tracesSampleRate: 0.1,
+        // The 10% roll above is the session sample; record the ones that pass.
+        replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
         enableLogs: true,
-        sendDefaultPii: true,
+        sendDefaultPii: false,
       });
       globalState.__appSentryInitialized__ = true;
     }

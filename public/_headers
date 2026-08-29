@@ -1,0 +1,4 @@
+# Content-hashed build assets never change under a given name — cache hard.
+# Scoped to the hashed asset prefix only; document routes stay SSR/revalidated.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

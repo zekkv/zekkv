@@ -202,7 +202,11 @@ function Clock() {
     return () => clearInterval(id);
   }, []);
 
-  return <span suppressHydrationWarning>{time ?? "--:--"}</span>;
+  return (
+    <span className="tabular-nums" suppressHydrationWarning>
+      {time ?? "--:--"}
+    </span>
+  );
 }
 
 function ThemeToggle() {

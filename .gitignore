@@ -21,3 +21,6 @@ todos.json
 .dev.vars*
 !.dev.vars.example
 !.env.example
+
+# Local tooling: SEO/CWV probe + OG-image render templates, not deployed
+/scripts/

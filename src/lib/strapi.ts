@@ -64,25 +64,99 @@ export interface StrapiToolkit {
 // single publish anywhere invalidates the whole cache with one `del`.
 const CACHE_KEY = "strapi-cache";
 
+// The CMS scales to zero (Cloud Run, min-instances=0). A cold start queues the
+// first request for ~15s and answers concurrent arrivals with 429 while the
+// single instance boots, so retrying is required — but the *total* wait must
+// stay far below the edge's request limits, or a visitor gets nothing at all
+// instead of a slow page. The budget below bounds the whole call, all attempts
+// included; the first attempt is generous enough to cover a cold queue.
+const TOTAL_BUDGET_MS = 30_000;
+const ATTEMPT_TIMEOUT_MS = 20_000;
+const RETRY_DELAY_MS = 2_000;
+
+// Upstash calls are fast, but an unbounded one would hang the render just as
+// badly as an unbounded CMS fetch.
+const REDIS_TIMEOUT_MS = 5_000;
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+function withTimeout<T>(
+  work: Promise<T>,
+  ms: number,
+  what: string
+): Promise<T> {
+  return Promise.race([
+    work,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`${what} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
+async function fetchFromStrapi<T>(path: string): Promise<T> {
+  const deadline = Date.now() + TOTAL_BUDGET_MS;
+  let lastError: unknown;
+
+  for (let attempt = 0; ; attempt++) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 1_000) break;
+    if (attempt > 0) await sleep(Math.min(RETRY_DELAY_MS, remaining));
+
+    let res: Response;
+    try {
+      res = await fetch(`${env.STRAPI_URL}/api/${path}`, {
+        headers: {
+          Authorization: `Bearer ${env.STRAPI_API_TOKEN}`,
+        },
+        signal: AbortSignal.timeout(
+          Math.min(ATTEMPT_TIMEOUT_MS, Math.max(1_000, deadline - Date.now()))
+        ),
+      });
+    } catch (error) {
+      // network error or timeout — worth another attempt inside the budget
+      lastError = error;
+      continue;
+    }
+
+    if (!res.ok) {
+      const message = `Strapi fetch failed: ${path} — ${res.status} ${res.statusText}`;
+      // 429 (no instance available during a cold start) and 5xx (instance
+      // restarting) are transient; any other status is permanent.
+      if (res.status === 429 || res.status >= 500) {
+        lastError = new Error(message);
+        continue;
+      }
+      throw new Error(message);
+    }
+
+    return (await res.json()) as T;
+  }
+
+  throw (
+    lastError ??
+    new Error(
+      `Strapi fetch failed: ${path} — ${TOTAL_BUDGET_MS}ms budget exhausted`
+    )
+  );
+}
+
 async function get<T>(path: string): Promise<T> {
   const field = path.split("?")[0];
-  const cached = await redis.hget<T>(CACHE_KEY, field);
+  const cached = await withTimeout(
+    redis.hget<T>(CACHE_KEY, field),
+    REDIS_TIMEOUT_MS,
+    "redis.hget"
+  );
   if (cached !== null && cached !== undefined) {
     return cached;
   }
 
-  const res = await fetch(`${env.STRAPI_URL}/api/${path}`, {
-    headers: {
-      Authorization: `Bearer ${env.STRAPI_API_TOKEN}`,
-    },
-  });
-  if (!res.ok) {
-    throw new Error(
-      `Strapi fetch failed: ${path} — ${res.status} ${res.statusText}`
-    );
-  }
-  const data = (await res.json()) as T;
-  await redis.hset(CACHE_KEY, { [field]: data });
+  const data = await fetchFromStrapi<T>(path);
+  await withTimeout(
+    redis.hset(CACHE_KEY, { [field]: data }),
+    REDIS_TIMEOUT_MS,
+    "redis.hset"
+  );
   return data;
 }
 

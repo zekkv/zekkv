@@ -1,0 +1,34 @@
+# Dependency updates for the portfolio site (bun).
+#
+# CI (lint, format, typecheck, build) runs on every push — including Dependabot's
+# branches — and needs no secrets, so every PR below arrives verified. CD only
+# runs for main, so a bot branch can never deploy, and nothing here auto-merges:
+# one PR per ecosystem each Monday, majors included, for a deliberate look.
+version: 2
+updates:
+  - package-ecosystem: bun
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "Asia/Manila"
+    # Let a release sit before proposing it, so yanked/broken versions pass us by.
+    cooldown:
+      default-days: 3
+    open-pull-requests-limit: 5
+    groups:
+      # Everything in one PR, majors included; security updates stay separate.
+      all:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "Asia/Manila"
+    groups:
+      actions:
+        patterns: ["*"]

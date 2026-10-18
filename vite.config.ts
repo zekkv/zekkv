@@ -25,6 +25,9 @@ const config = defineConfig(({ mode }) => {
               org: env.VITE_SENTRY_ORG,
               project: env.VITE_SENTRY_PROJECT,
               authToken: env.SENTRY_AUTH_TOKEN,
+              // Keep maps on disk: wrangler uploads them to Cloudflare and fails
+              // the deploy when a module references a map that is missing.
+              sourcemaps: { filesToDeleteAfterUpload: [] },
             }),
           ]
         : []),

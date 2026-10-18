@@ -6,10 +6,10 @@ import { env } from "./env";
 export default Sentry.withSentry(
   () => ({
     dsn: env.SENTRY_DSN,
-    sendDefaultPii: true,
     tracesSampleRate: 1.0,
-    enableLogs: true,
+    // v11 removed `sendDefaultPii` (its defaults match `sendDefaultPii: true`)
+    // and added body collection by default; keep the old body volume.
+    dataCollection: { httpBodies: [] },
   }),
-  // @ts-expect-error - TanStack's handler isn't typed as a Cloudflare ExportedHandler
   wrapFetchWithSentry(handler)
 );

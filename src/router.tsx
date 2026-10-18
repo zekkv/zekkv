@@ -34,8 +34,24 @@ export function getRouter() {
         // The 10% roll above is the session sample; record the ones that pass.
         replaysSessionSampleRate: 1.0,
         replaysOnErrorSampleRate: 1.0,
-        enableLogs: true,
-        sendDefaultPii: false,
+        // v11 dropped `sendDefaultPii` and collects most categories by
+        // default; this keeps the restrictive v10 `sendDefaultPii: false`
+        // posture. Baseline copied from the v10 -> v11 migration guide.
+        dataCollection: {
+          userInfo: false,
+          cookies: false,
+          httpHeaders: {
+            request: { deny: ["forwarded", "-ip", "remote-", "via", "-user"] },
+            response: { deny: ["forwarded", "-ip", "remote-", "via", "-user"] },
+          },
+          httpBodies: [],
+          urlQueryParams: {
+            deny: ["forwarded", "-ip", "remote-", "via", "-user"],
+          },
+          genAI: { inputs: false, outputs: false },
+          databaseQueryData: false,
+          graphQL: { document: false, variables: false },
+        },
       });
       globalState.__appSentryInitialized__ = true;
     }

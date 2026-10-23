@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from "vite";
-import { devtools } from "@tanstack/devtools-vite";
 import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -16,7 +15,6 @@ const config = defineConfig(({ mode }) => {
       tsconfigPaths: true,
     },
     plugins: [
-      devtools(),
       tailwindcss(),
       tanstackStart(),
       ...(isCi
@@ -32,11 +30,16 @@ const config = defineConfig(({ mode }) => {
           ]
         : []),
       viteReact(),
-      cloudflare({
-        viteEnvironment: {
-          name: "ssr",
-        },
-      }),
+      // The Workers plugin rejects vitest's SSR externals; unit tests don't need it.
+      ...(process.env.VITEST
+        ? []
+        : [
+            cloudflare({
+              viteEnvironment: {
+                name: "ssr",
+              },
+            }),
+          ]),
     ],
   };
 });

@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { Link, getRouteApi } from "@tanstack/react-router";
+import { Link, getRouteApi, useLocation } from "@tanstack/react-router";
 import { useTheme } from "next-themes";
 
 // ponytail: NAV mirrors the route files (typed `to` paths) — not CMS content, stays local.
@@ -30,6 +30,9 @@ function external(href: string) {
 
 export default function Chrome({ children }: { children: React.ReactNode }) {
   const contact = useContact();
+  const { pathname } = useLocation();
+  // The terminal view brings its own full-screen chrome.
+  if (pathname === "/terminal") return children;
   return (
     <>
       <a
@@ -90,9 +93,9 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
           />
 
           <div className="flex items-center justify-between border-t border-hairline pt-4 font-mono text-[11px] text-graphite">
-            <span className="flex items-center gap-2">
-              <TimeStatus />
-            </span>
+            <span>SG</span>
+            <TerminalLink />
+            <Clock />
             <ThemeToggle />
           </div>
         </div>
@@ -105,7 +108,10 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
             <Link to="/" className="font-display text-lg">
               Charles Velasco
             </Link>
-            <ThemeToggle />
+            <span className="flex items-center gap-4 font-mono text-[11px]">
+              <TerminalLink label="bash" />
+              <ThemeToggle />
+            </span>
           </div>
           <nav
             aria-label="Primary"
@@ -139,7 +145,7 @@ export default function Chrome({ children }: { children: React.ReactNode }) {
             linkClassName="text-sm text-graphite underline decoration-hairline underline-offset-4 hover:text-viridian"
           />
           <p className="mt-5 flex items-center gap-2 font-mono text-[11px] text-graphite">
-            <TimeStatus suffix=" SGT" />
+            <TimeStatus suffix="SGT" />
           </p>
         </footer>
       </div>
@@ -173,15 +179,12 @@ function ContactList({
 }
 
 function TimeStatus({ suffix }: { suffix?: string }) {
+  // Fragment children become items of the parent flex row, which owns the spacing.
   return (
     <>
-      <span
-        aria-hidden="true"
-        className="inline-block h-1.5 w-1.5 rounded-full bg-viridian"
-      />
-      Singapore&nbsp;&nbsp;
+      <span>Singapore</span>
       <Clock />
-      {suffix}
+      {suffix && <span>{suffix}</span>}
     </>
   );
 }
@@ -209,6 +212,21 @@ function Clock() {
   );
 }
 
+// No label = icon only (desktop rail), named for screen readers via aria-label.
+function TerminalLink({ label }: { label?: string }) {
+  return (
+    <Link
+      to="/terminal"
+      title="Switch to terminal view"
+      aria-label={label ? undefined : "Switch to terminal view"}
+      className="font-mono text-[11px] text-graphite transition-colors duration-150 hover:text-viridian"
+    >
+      <span aria-hidden={label ? true : undefined}>&gt;_</span>
+      {label && ` ${label}`}
+    </Link>
+  );
+}
+
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const hydrated = useSyncExternalStore(
@@ -218,22 +236,38 @@ function ThemeToggle() {
   );
 
   if (!hydrated) {
-    return (
-      <span aria-hidden="true" className="invisible font-mono text-[11px]">
-        dim
-      </span>
-    );
+    return <span aria-hidden="true" className="inline-block size-3" />;
   }
 
   const dark = resolvedTheme === "dark";
+  const label = dark ? "Switch to light" : "Switch to dark";
   return (
     <button
       type="button"
       onClick={() => setTheme(dark ? "light" : "dark")}
-      title={dark ? "Switch to light" : "Switch to dark"}
-      className="cursor-pointer font-mono text-[11px] text-graphite transition-colors duration-150 hover:text-viridian"
+      title={label}
+      aria-label={label}
+      className="flex cursor-pointer text-graphite transition-colors duration-150 hover:text-viridian"
     >
-      {dark ? "light" : "dim"}
+      {/* Shows the theme you'd switch to: sun in dark mode, moon in light. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 16 16"
+        className="size-3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      >
+        {dark ? (
+          <>
+            <circle cx="8" cy="8" r="3" />
+            <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.05 3.05l1.06 1.06M11.89 11.89l1.06 1.06M3.05 12.95l1.06-1.06M11.89 4.11l1.06-1.06" />
+          </>
+        ) : (
+          <path d="M13.5 9.5A5.5 5.5 0 1 1 6.5 2.5a4.5 4.5 0 0 0 7 7Z" />
+        )}
+      </svg>
     </button>
   );
 }

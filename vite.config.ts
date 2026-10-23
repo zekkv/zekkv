@@ -32,11 +32,16 @@ const config = defineConfig(({ mode }) => {
           ]
         : []),
       viteReact(),
-      cloudflare({
-        viteEnvironment: {
-          name: "ssr",
-        },
-      }),
+      // The Workers plugin rejects vitest's SSR externals; unit tests don't need it.
+      ...(process.env.VITEST
+        ? []
+        : [
+            cloudflare({
+              viteEnvironment: {
+                name: "ssr",
+              },
+            }),
+          ]),
     ],
   };
 });

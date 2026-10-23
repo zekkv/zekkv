@@ -33,7 +33,7 @@ export interface StrapiEducation {
   id: number;
   documentId: string;
   school: string;
-  degree: string;
+  degree?: string | null;
   track?: string | null;
   duration: string;
 }

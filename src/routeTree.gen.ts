@@ -14,6 +14,7 @@ import { Route as EducationRouteImport } from './routes/education'
 import { Route as ExperienceRouteImport } from './routes/experience'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TerminalRouteImport } from './routes/terminal'
 import { Route as ToolkitRouteImport } from './routes/toolkit'
 import { Route as ApiWebhooksStrapiRouteImport } from './routes/api/webhooks/strapi'
 
@@ -42,6 +43,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TerminalRoute = TerminalRouteImport.update({
+  id: '/terminal',
+  path: '/terminal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolkitRoute = ToolkitRouteImport.update({
   id: '/toolkit',
   path: '/toolkit',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminal': typeof TerminalRoute
   '/toolkit': typeof ToolkitRoute
   '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminal': typeof TerminalRoute
   '/toolkit': typeof ToolkitRoute
   '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/experience': typeof ExperienceRoute
   '/projects': typeof ProjectsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminal': typeof TerminalRoute
   '/toolkit': typeof ToolkitRoute
   '/api/webhooks/strapi': typeof ApiWebhooksStrapiRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/experience'
     | '/projects'
     | '/sitemap.xml'
+    | '/terminal'
     | '/toolkit'
     | '/api/webhooks/strapi'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/experience'
     | '/projects'
     | '/sitemap.xml'
+    | '/terminal'
     | '/toolkit'
     | '/api/webhooks/strapi'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/experience'
     | '/projects'
     | '/sitemap.xml'
+    | '/terminal'
     | '/toolkit'
     | '/api/webhooks/strapi'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   ExperienceRoute: typeof ExperienceRoute
   ProjectsRoute: typeof ProjectsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TerminalRoute: typeof TerminalRoute
   ToolkitRoute: typeof ToolkitRoute
   ApiWebhooksStrapiRoute: typeof ApiWebhooksStrapiRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terminal': {
+      id: '/terminal'
+      path: '/terminal'
+      fullPath: '/terminal'
+      preLoaderRoute: typeof TerminalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/toolkit': {
       id: '/toolkit'
       path: '/toolkit'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperienceRoute: ExperienceRoute,
   ProjectsRoute: ProjectsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TerminalRoute: TerminalRoute,
   ToolkitRoute: ToolkitRoute,
   ApiWebhooksStrapiRoute: ApiWebhooksStrapiRoute,
 }

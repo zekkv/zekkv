@@ -1,6 +1,4 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import { preconnect } from "react-dom";
 import Chrome from "../components/custom/chrome";
 import { ThemeProvider } from "next-themes";
@@ -119,19 +117,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         >
           <Chrome>{children}</Chrome>
         </ThemeProvider>
-        {import.meta.env.DEV && (
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-        )}
         <Scripts />
         <script
           type="module"

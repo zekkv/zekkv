@@ -19,7 +19,8 @@ jobs:
       - name: Install bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4
+          # `bun lint` is canary-only until a stable release ships it; revert to 1.4 then.
+          bun-version: canary
 
       - name: Cache dependencies
         uses: actions/cache@v6
